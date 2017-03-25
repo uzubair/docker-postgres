@@ -1,0 +1,28 @@
+# the base image is available on the Docker hub:
+# https://hub.docker.com/_postgres
+FROM postgres:9.5.3
+
+LABEL description="Postgres Database" \
+    version=9.5.3
+
+MAINTAINER Usman Zubair <uzubair@gmail.com>
+
+# environment variables that create default database, user account, and
+# defines custom path to store Postgres data files
+ENV HOME=/home
+
+ENV POSTGRES_DB=clouddb
+ENV POSTGRES_USER=clouddbuser
+ENV POSTGRES_PASSWORD=clouddbpassword
+ENV PGDATA=/postgres_data/postgres
+
+ENV POSTGRES_DATA=/postgres_data
+ENV POSTGRES_BACKUPS=/postgres_backups
+
+# mount named volumes of the host machine
+VOLUME $POSTGRES_DATA
+VOLUME $POSTGRES_BACKUPS
+
+# copy the backupdb.sh and restoredb.sh scripts
+COPY scripts/backupdb.sh $HOME
+COPY scripts/restoredb.sh $HOME

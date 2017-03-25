@@ -1,0 +1,38 @@
+# Docker Compose syntax version. Requires Docker Engine 1.//12.0+
+version: '2.1'
+
+# Create Docker's Named volumes
+# By default, the named volumes use docker local driver and creates the volume
+# under docker specific directory
+volumes:
+  # postgres data volume
+  postgres_data:
+    driver: local
+  # volume for postgres backups
+  postgres_backups:
+    driver: local
+
+
+# Docker's Subnet
+# All containers run on this subnet
+networks:
+  dark-net:
+    driver: bridge
+
+
+# Docker Services
+services:
+  postgres:
+    container_name: postgres
+    build:
+      context: ./postgres
+      dockerfile: postgres.docker
+    ports:
+      - "5432"
+    environment:
+      - PGDATA=/postgres_data/postgres
+    volumes:
+      - postgres_data:/postgres_data
+      - postgres_backups:/postgres_backups
+    networks:
+      - dark-net
